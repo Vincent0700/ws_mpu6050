@@ -6,11 +6,45 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        table.dataset {
+            background: #333;
+            color: #fff;
+        }
+        table.dataset td {
+            width: 80px;
+            padding: 5px 10px;
+            border: 1px solid #fff;
+        }
+    </style>
 </head>
 <body>
+<ul>
+    <table class="dataset">
+        <tr>
+            <td>accel_data</td>
+            <td id="accel_x"></td>
+            <td id="accel_y"></td>
+            <td id="accel_z"></td>
+        </tr>
+        <tr>
+            <td>gyro_data</td>
+            <td id="gyro_x"></td>
+            <td id="gyro_y"></td>
+            <td id="gyro_z"></td>
+        </tr>
+    </table>
+</ul>
+
 <script type="text/javascript" src="/static/js/libs/socket.io/socket.io.min.js"></script>
 <script>
     const socket = io.connect(`${location.host}/mpu6050`);
+    let data = {};
 
     socket.on("connect", function () {
         setInterval(function () {
@@ -19,7 +53,17 @@
     });
 
     socket.on("recv_data_mpu6050", function (msg) {
-        console.log(msg)
+        if (msg && msg.accel_data && msg.gyro_data && msg.centidegree) {
+            data = msg;
+            const accel = data.accel_data;
+            const gyro = data.gyro_data;
+            document.getElementById("accel_x").innerHTML = accel.x.toFixed(5);
+            document.getElementById("accel_y").innerHTML = accel.y.toFixed(5);
+            document.getElementById("accel_z").innerHTML = accel.z.toFixed(5);
+            document.getElementById("gyro_x").innerHTML = gyro.x.toFixed(5);
+            document.getElementById("gyro_y").innerHTML = gyro.y.toFixed(5);
+            document.getElementById("gyro_z").innerHTML = gyro.z.toFixed(5);
+        }
     })
 </script>
 </body>

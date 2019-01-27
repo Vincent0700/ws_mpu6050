@@ -12,7 +12,7 @@ log.setLevel(logging.ERROR)
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html', interval=100)
+    return render_template('index.html', interval=100, accel_data=10)
 
 
 @socketio.on('connect', namespace='/mpu6050')
